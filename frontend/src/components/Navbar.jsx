@@ -1,8 +1,10 @@
+import logo from "../assets/Logo.jpeg";
 function Navbar() {
   return (
     <nav className="navbar">
       <div className="logo">
-        🧠 <span>IntentOS</span>
+        <img src={logo} alt="IntentOS" className="logo-img" />
+        <span>IntentOS</span>
       </div>
 
       <div className="navbar-right">
