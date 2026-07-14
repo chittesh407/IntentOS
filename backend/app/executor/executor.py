@@ -1,24 +1,29 @@
 import subprocess
 
-from app.executor.apps import APPLICATIONS
+from app.agent.context import AgentContext
 
 
 class Executor:
 
-    def execute(self, command: str):
+    def execute(self, context: AgentContext):
 
-        command = command.lower()
+        print("[Executor] Executing...")
 
-        for app_name, executable in APPLICATIONS.items():
+        if context.resolved_type != "application":
+            context.execution_status = "FAILED"
+            context.response = "Unsupported target."
+            return context
 
-            if app_name in command:
+        try:
+            subprocess.Popen(context.resolved_value)
 
-                try:
-                    subprocess.Popen(executable)
+            context.execution_status = "SUCCESS"
+            context.response = (
+                f"Opened {context.target} successfully."
+            )
 
-                    return f"✅ {app_name.title()} opened successfully."
+        except Exception as e:
+            context.execution_status = "FAILED"
+            context.response = str(e)
 
-                except Exception as e:
-                    return f"❌ {e}"
-
-        return "❌ Application not supported yet"
+        return context
